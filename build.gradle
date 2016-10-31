@@ -1,0 +1,26 @@
+task checkJavaVersion {
+    String javaSpecVersion = System.getProperties().get('java.specification.version')
+    int javaSpecMinorVersion = Integer.valueOf(javaSpecVersion.split("\\.")[1])
+
+    if (javaSpecMinorVersion < 8) {
+        throw new Exception("Java version should be at least 1.8, your Java version is: $javaSpecVersion")
+    }
+}
+
+task installGitHooks {
+    copy {
+        from 'hooks'
+        into '.git/hooks'
+    }
+}
+
+task check << {
+    File file = file('testfile')
+    if (file.text.trim().length() == 0) {
+        throw new Exception("$file.name is empty!")
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '3.1'
+}
